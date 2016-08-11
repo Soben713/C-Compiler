@@ -1,0 +1,149 @@
+program
+@definition.PushName : 
+@definition.PushType : 
+@definition.PopType : 
+@definition.variable.Define : 
+@definition.array.Define : 
+@definition.array.StartDim : 
+@definition.array.AddDim : 
+@definition.method.Define : 
+@definition.method.AddArgument : 
+@definition.method.DefaultReturn : 
+@definition.method.Return : 
+@definition.method.ReturnVal : 
+@definition.method.MainMethodPreProcess : 
+@block.Open : 
+@block.Close : 
+@assignment.Assign : 
+@expr.basic.PushInt : 
+@expr.basic.PushFloat : 
+@expr.basic.PushBoolean : 
+@expr.condOp.PushAnd : 
+@expr.condOp.PushOr : 
+@expr.condOp.Operate : 
+@expr.eqOp.PushEqual : 
+@expr.eqOp.PushNotEqual : 
+@expr.eqOp.Operate : 
+@expr.relOp.PushLT : 
+@expr.relOp.PushGT : 
+@expr.relOp.PushLE : 
+@expr.relOp.PushGE : 
+@expr.relOp.Operate : 
+@expr.arithOp1.PushSum : 
+@expr.arithOp1.PushMinus : 
+@expr.arithOp1.Operate : 
+@expr.arithOp2.PushDiv : 
+@expr.arithOp2.PushMul : 
+@expr.arithOp2.PushMod : 
+@expr.arithOp2.Operate : 
+@expr.unaryOp.Negative : 
+@expr.location.Push : 
+@expr.location.AddDim : 
+@expr.location.PopLocationPushAddress : 
+@expr.unaryOp.Not : 
+@expr.methodCall.Push : 
+@expr.methodCall.Call : 
+@expr.methodCall.AddArgument : 
+@expr.methodCall.CallAndPushReturnValue : 
+@ifStatement.IfJmp : 
+@ifStatement.ElseJmp : 
+@ifStatement.FillIfJmp : 
+@ifStatement.FillElseJmp : 
+@forStatement.AddToSS : 
+@forStatement.Save : 
+@forStatement.JmpOut : 
+@forStatement.JmpIn : 
+@forStatement.RemFromSSAndFillJmpOut : 
+@forStatement.MoveDown : 
+@forStatement.Break : 
+@forStatement.Continue : 
+@write.Float : 
+@write.Int : 
+@read.Float : 
+@read.Int : 
+program : #program_part_decl #program
+program : 
+program_part_decl : #@definition.PushType #type #@definition.PushName id #decl
+program_part_decl : #@definition.PushType void #@definition.PushName id #method_decl_without_type
+decl : #var_decl_without_type
+decl : #method_decl_without_type
+method_decl_without_type : #@definition.method.Define ( #argument_list_star ) #@definition.method.MainMethodPreProcess #block #@definition.method.DefaultReturn
+argument_list_star : 
+argument_list_star : #argument_list_plus
+argument_list_plus : #@definition.PushType #type id #@definition.method.AddArgument , #argument_list_plus
+argument_list_plus : #@definition.PushType #type id #@definition.method.AddArgument
+dimensions : #@definition.array.StartDim #real_dimensions
+real_dimensions : [ int_num ] #@definition.array.AddDim #real_dimensions
+real_dimensions : [ int_num ] #@definition.array.AddDim
+var_decl : #@definition.PushType #type #@definition.PushName id #var_decl_without_type
+var_decl_without_type : #dimensions #@definition.array.Define #id_list_start_with_comma
+var_decl_without_type : #@definition.variable.Define #id_list_start_with_comma
+id_list_start_with_comma : , #@definition.PushName id #@definition.variable.Define #id_list_start_with_comma
+id_list_start_with_comma : , #@definition.PushName id #dimensions #@definition.array.Define #id_list_start_with_comma
+id_list_start_with_comma : #@definition.PopType ;
+type : int
+type : bool
+type : float
+block : { #@block.Open #block_inners } #@block.Close 
+block_inners : #var_decl #block_inners
+block_inners : #statement #block_inners
+block_inners : 
+statement : #assignment ;
+statement : #method_call #@expr.methodCall.Call ;
+statement : if ( #expr ) #@ifStatement.IfJmp #block #_else
+_else : else #@ifStatement.ElseJmp #@ifStatement.FillIfJmp #block #@ifStatement.FillElseJmp 
+_else : #@ifStatement.FillIfJmp 
+statement : for #@forStatement.AddToSS ( #assignment ; #@forStatement.Save #expr #@forStatement.JmpOut ; #assignment #@forStatement.MoveDown ) { #@block.Open #block_inners #@forStatement.JmpIn } #@block.Close #@forStatement.RemFromSSAndFillJmpOut
+statement : return #b_return ;
+statement : break #@forStatement.Break ; 
+statement : continue #@forStatement.Continue ; 
+statement : #block
+statement : readfloat #location #@read.Float ;
+statement : readint #location #@read.Int ;
+statement : writefloat #expr #@write.Float ;
+statement : writeint #expr #@write.Int ;
+b_return : #expr #@definition.method.ReturnVal
+b_return : #@definition.method.Return
+assignment : #location = #expr #@assignment.Assign
+method_call : id #@expr.methodCall.Push ( #expr_list_star )
+expr_list_star : #expr_list_plus
+expr_list_star : 
+expr_list_plus : #expr #@expr.methodCall.AddArgument , #expr_list_plus
+expr_list_plus : #expr #@expr.methodCall.AddArgument 
+location : id #@expr.location.Push #location_dimension
+location_dimension : [ #expr #@expr.location.AddDim ] #location_dimension
+location_dimension : 
+expr : #expr #cond_op #B #@expr.condOp.Operate
+expr : #B
+B : #B #eq_op #C #@expr.eqOp.Operate
+B : #C
+C : #C #rel_op #D #@expr.relOp.Operate
+C : #D
+D : #D #arith_op1 #G #@expr.arithOp1.Operate
+D : #G
+G : #G #arith_op2 #H #@expr.arithOp2.Operate
+G : #H
+H : - #H #@expr.unaryOp.Negative
+H : ! #H #@expr.unaryOp.Not
+H : #I
+I : ( #expr )
+I : #location #@expr.location.PopLocationPushAddress
+I : #method_call #@expr.methodCall.CallAndPushReturnValue
+I : #basic_term 
+arith_op1 : + #@expr.arithOp1.PushSum
+arith_op1 : - #@expr.arithOp1.PushMinus
+arith_op2 : / #@expr.arithOp2.PushDiv
+arith_op2 : * #@expr.arithOp2.PushMul
+arith_op2 : % #@expr.arithOp2.PushMod
+rel_op : < #@expr.relOp.PushLT
+rel_op : > #@expr.relOp.PushGT
+rel_op : <= #@expr.relOp.PushLE
+rel_op : >= #@expr.relOp.PushGE
+eq_op : == #@expr.eqOp.PushEqual
+eq_op : != #@expr.eqOp.PushNotEqual
+cond_op : && #@expr.condOp.PushAnd
+cond_op : || #@expr.condOp.PushOr
+basic_term : int_num #@expr.basic.PushInt
+basic_term : float_num #@expr.basic.PushFloat
+basic_term : true #@expr.basic.PushBoolean
+basic_term : false #@expr.basic.PushBoolean

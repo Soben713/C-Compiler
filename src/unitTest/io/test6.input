@@ -1,0 +1,26 @@
+int counter[10][10];
+bool b[50][50];
+
+int fib(int x){
+	if(x<2){
+		return 1;
+	} else {
+		return fib(x-1) + fib(x-2);
+	}
+}
+void rec(int x){
+	if(x<1){
+		return;
+	}
+	counter[9][9] = counter[9][9]+1;
+	rec(x-1);
+}
+void main(){
+	b[10][10]=true;
+	if(b[10][10]){
+		writeint 1000;
+	}
+	writeint fib(10);
+	rec(100);
+	writeint counter[9][9];
+}

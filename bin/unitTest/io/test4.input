@@ -1,0 +1,16 @@
+void main(){
+	int a;
+	for(a=1; a<10; a=a+1){
+		writeint a;
+	}
+	int b;
+	b = 0;
+	for(a=1; a<1000; a=a*2){
+		b=b+1;
+	}
+	writeint b;
+	writeint a;
+	for(a=1; a*a<100; a=a+1){
+		writeint a;
+	}
+}

@@ -1,0 +1,14 @@
+void main(){
+	bool a, b;
+	a = true;
+	b = false;
+	if( !a || b ){
+		writeint 1;
+	} else {
+		writeint 2;
+	}
+	if(a){
+		writeint 3;
+	}
+	writeint 4;
+}

@@ -1,0 +1,11 @@
+8
+9
+0
+:= im_i_8 ld_i_0
+wi im_i_100
+err im_i_1 im_i_1
+:= ld_i_0 gd_i_4
+:=sp ld_i_4
+- ld_i_4 im_i_8 ld_i_4
+sp:= ld_i_4
+jmp gd_i_4

@@ -1,0 +1,38 @@
+void pr(){
+	writeint 1;
+}
+void main(){
+	pr();
+	writeint 2;
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+16
+13
+6
+pr():
+	wi im_i_1
+								****pr instructions end here, we put return codes here
+	:= ld_i_0 gd_i_4				ld_i_0 is whereToReturn (should be assigned a value when pr is called)
+	:=sp ld_i_4						sp ==> ld_i_4
+	- ld_i_4 im_i_8 ld_i_4			ld_i_4 -= 8 (the activation record size of pr)
+	sp:= ld_i_4						ld_i_4 ==> sp
+	jmp gd_i_4						gd_i_4 was assigned the value of ld_i_0 (we need to do that cause sp is changed and ld_i_0 is lost)
+	
+main():
+	:= im_i_20 ld_i_0				main doesn't have any caller, therefore we put code size into ld_i_0 (whereToReturn)
+	:=sp ld_i_4						sp ==> ld_i_4
+	+ ld_i_4 im_i_8 ld_i_4			ld_i_4 += 8 (the activation record size of pr - the callee)
+	sp:= ld_i_4						ld_i_4 ==> sp
+	:=pc gd_i_8						pc ==> gd_i_8 (we need to jmp back to pc+4)
+	+ gd_i_8 im_i_4 gd_i_8			gd_i_8 += 4
+	:= gd_i_8 ld_i_0				here is where we set callee's whereToReturn, after increasing sp, ld_i_0 is definitely callee's local whereToReturn
+	jmp im_i_0						jump to callee's first instruction
+	wi im_i_2						
+								****main instructions end here, we put return codes here
+	:= ld_i_0 gd_i_12				we decrease the sp and then jump out of the program, if we don't do that methods after declaring main method will be executed
+	:=sp ld_i_8
+	- ld_i_8 im_i_12 ld_i_8
+	sp:= ld_i_8
+	jmp gd_i_12						jump out
